@@ -77,6 +77,7 @@ const add = () => {
   list.push(newItem);
   updateTotals();
   cleanInputs();
+  renderItems();
 };
 
 const updateTotals = () => {
@@ -100,4 +101,14 @@ const cleanInputs = () => {
   calories.val("");
   carbs.val("");
   protein.val("");
+};
+
+const renderItems = () => {
+  $("tbody").empty();
+
+  list.map(item => {
+    $("tbody").append(
+      tableRow([item.description, item.calories, item.carbs, item.protein])
+    );
+  });
 };

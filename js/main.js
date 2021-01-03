@@ -20,17 +20,17 @@ const tagAttributes = obj => (content = "") =>
 
 const tag = t => {
   if (typeof t === "string") {
-    tagAttributes({ tag: t });
+    return tagAttributes({ tag: t });
   } else {
-    tagAttributes(t);
+    return tagAttributes(t);
   }
 };
 
 const tableRowTag = tag("tr");
-const tableRow = item => compose(tableRowTag, tableCells)(items);
+const tableRow = items => compose(tableRowTag, tableCells)(items);
 
 const tableCell = tag("td");
-const tableCells = item => item.map(tableCell).join("");
+const tableCells = items => items.map(tableCell).join("");
 
 let description = $("#description");
 let calories = $("#calories");

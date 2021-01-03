@@ -63,7 +63,6 @@ const validateInputs = () => {
 
   if (description.val() && calories.val() && carbs.val() && protein.val()) {
     add();
-    cleanInputs();
   }
 };
 
@@ -76,7 +75,24 @@ const add = () => {
   };
 
   list.push(newItem);
-  console.log(list);
+  updateTotals();
+  cleanInputs();
+};
+
+const updateTotals = () => {
+  let calories = 0,
+    carbs = 0,
+    protein = 0;
+
+  list.map(item => {
+    calories += item.calories;
+    carbs += item.carbs;
+    protein += item.protein;
+  });
+
+  $("#totalCalories").text(calories);
+  $("#totalCarbs").text(carbs);
+  $("#totalProtein").text(protein);
 };
 
 const cleanInputs = () => {

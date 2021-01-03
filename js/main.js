@@ -6,6 +6,8 @@ let calories = $("#calories");
 let carbs = $("#carbs");
 let protein = $("#protein");
 
+let list = [];
+
 description.keypress(() => {
   description.removeClass("is-invalid");
 });
@@ -29,6 +31,26 @@ const validateInputs = () => {
   protein.val() ? "" : protein.addClass("is-invalid");
 
   if (description.val() && calories.val() && carbs.val() && protein.val()) {
-    console.log("datos validados");
+    add();
+    cleanInputs();
   }
+};
+
+const add = () => {
+  const newItem = {
+    description: description.val(),
+    calories: parseInt(calories.val()),
+    carbs: parseInt(carbs.val()),
+    protein: parseInt(protein.val())
+  };
+
+  list.push(newItem);
+  console.log(list);
+};
+
+const cleanInputs = () => {
+  description.val("");
+  calories.val("");
+  carbs.val("");
+  protein.val("");
 };

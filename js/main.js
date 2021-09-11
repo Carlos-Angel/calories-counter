@@ -1,67 +1,59 @@
-const compose = (...functions) => data =>
-  functions.reduceRight((value, func) => func(value), data);
+const compose =
+  (...functions) =>
+  (data) =>
+    functions.reduceRight((value, func) => func(value), data);
 
-const attributesToString = (obj = {}) => {
-  const keys = Object.keys(obj);
-  const attrs = [];
-  for (let i = 0; i < keys.length; i++) {
-    let attr = keys[i];
-    attrs.push(`${attr}="${obj[attr]}"`);
-  }
+const attributesToString = (obj = {}) =>
+  Object.keys(obj)
+    .map((attr) => `${attr}="${obj[attr]}"`)
+    .join('');
 
-  const string = attrs.join("");
-  return string;
-};
+const tagAttributes =
+  (obj) =>
+  (content = '') =>
+    `<${obj.tag} ${obj.attrs ? ' ' : ''}${attributesToString(
+      obj.attrs,
+    )}>${content}</${obj.tag}>`;
 
-const tagAttributes = obj => (content = "") =>
-  `<${obj.tag} ${obj.attrs ? " " : ""}${attributesToString(
-    obj.attrs
-  )}>${content}</${obj.tag}>`;
+const tag = (t) =>
+  typeof t === 'string' ? tagAttributes({ tag: t }) : tagAttributes(t);
 
-const tag = t => {
-  if (typeof t === "string") {
-    return tagAttributes({ tag: t });
-  } else {
-    return tagAttributes(t);
-  }
-};
+const tableRowTag = tag('tr');
+const tableRow = (items) => compose(tableRowTag, tableCells)(items);
 
-const tableRowTag = tag("tr");
-const tableRow = items => compose(tableRowTag, tableCells)(items);
+const tableCell = tag('td');
+const tableCells = (items) => items.map(tableCell).join('');
 
-const tableCell = tag("td");
-const tableCells = items => items.map(tableCell).join("");
+const trashIcon = tag({ tag: 'i', attrs: { class: 'fas fa-trash-alt' } })('');
 
-const trashIcon = tag({ tag: "i", attrs: { class: "fas fa-trash-alt" } })("");
-
-let description = $("#description");
-let calories = $("#calories");
-let carbs = $("#carbs");
-let protein = $("#protein");
+let description = $('#description');
+let calories = $('#calories');
+let carbs = $('#carbs');
+let protein = $('#protein');
 
 let list = [];
 
 description.keypress(() => {
-  description.removeClass("is-invalid");
+  description.removeClass('is-invalid');
 });
 
 calories.keypress(() => {
-  calories.removeClass("is-invalid");
+  calories.removeClass('is-invalid');
 });
 
 carbs.keypress(() => {
-  carbs.removeClass("is-invalid");
+  carbs.removeClass('is-invalid');
 });
 
 protein.keypress(() => {
-  protein.removeClass("is-invalid");
+  protein.removeClass('is-invalid');
 });
 
 const validateInputs = () => {
-  description.val() ? "" : description.addClass("is-invalid");
-  calories.val() ? "" : calories.addClass("is-invalid");
-  carbs.val() ? "" : carbs.addClass("is-invalid");
-  protein.val() ? "" : protein.addClass("is-invalid");
+  description.val() ? '' : description.addClass('is-invalid');
+  calories.val() ? '' : calories.addClass('is-invalid');
+  carbs.val() ? '' : carbs.addClass('is-invalid');
+  protein.val() ? '' : protein.addClass('is-invalid');
 
   if (description.val() && calories.val() && carbs.val() && protein.val()) {
     add();
@@ -73,7 +65,7 @@ const add = () => {
     description: description.val(),
     calories: parseInt(calories.val()),
     carbs: parseInt(carbs.val()),
-    protein: parseInt(protein.val())
+    protein: parseInt(protein.val()),
   };
 
   list.push(newItem);
@@ -87,49 +79,49 @@ const updateTotals = () => {
     carbs = 0,
     protein = 0;
 
-  list.map(item => {
+  list.map((item) => {
     calories += item.calories;
     carbs += item.carbs;
     protein += item.protein;
   });
 
-  $("#totalCalories").text(calories);
-  $("#totalCarbs").text(carbs);
-  $("#totalProtein").text(protein);
+  $('#totalCalories').text(calories);
+  $('#totalCarbs').text(carbs);
+  $('#totalProtein').text(protein);
 };
 
 const cleanInputs = () => {
-  description.val("");
-  calories.val("");
-  carbs.val("");
-  protein.val("");
+  description.val('');
+  calories.val('');
+  carbs.val('');
+  protein.val('');
 };
 
 const renderItems = () => {
-  $("tbody").empty();
+  $('tbody').empty();
 
   list.map((item, index) => {
     const removeButton = tag({
-      tag: "button",
+      tag: 'button',
       attrs: {
-        class: "btn btn-outline-danger",
-        onclick: `removeItem(${index})`
-      }
+        class: 'btn btn-outline-danger',
+        onclick: `removeItem(${index})`,
+      },
     })(trashIcon);
 
-    $("tbody").append(
+    $('tbody').append(
       tableRow([
         item.description,
         item.calories,
         item.carbs,
         item.protein,
-        removeButton
-      ])
+        removeButton,
+      ]),
     );
   });
 };
 
-const removeItem = index => {
+const removeItem = (index) => {
   list.splice(index, 1);
   updateTotals();
   renderItems();
